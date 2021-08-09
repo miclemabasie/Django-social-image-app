@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+{% block content %}
+    {% comment %} <h1>{{user.get_full_name}}</h1> {% endcomment %}
+    <h1>{{user.username}}</h1>
+    <hr>
+    <div class="row">
+    <div class="col-md-3">
+        <img class="rounded-circle mx-auto d-block" src="{% thumbnail user.profile.photo 180x180 %}" alt="">
+    </div>
+
+    <div class="col-md-9">
+        <div class="row">
+        {% with total_followers=user.followers.count %}
+            <div class="col-md-6">
+                <button class="btn btn-outline-secondary float-letf">
+                <span class="followers-count">{{total_followers}}</span> Followers</button>
+            </div>
+
+            <div class="col-md-6">
+            <a class="follow btn btn-success float-right" id="follow" href="#" data-id="{{user.id}}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow button">
+                {% if request.user in user.followers.all %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+
+                </a>
+            </div>
+
+        </div>
+        <div id="image-list">
+            {% include 'list-ajax.html' with images=user.images_created.all %}
+        </div>
+
+        {% endwith %}
+    </div>
+    
+    </div>
+{% endblock content %}
+
+
+{% block domready %}
+
+
+    $('a.follow').click(function(e) {
+        e.preventDefault()
+        $.post('{% url 'follow_user' %}',
+        {
+            id: $(this).data('id'),
+            action: $(this).data('action')
+        },
+        function(data){
+            if (data['status'] == 'ok') {
+                // get the current action of the link
+                var previous_action = $('a.follow').data('action')
+                // toggle the text in the action id
+                $('a.follow').data('action', previous_action == 'follow' ? 'unfollow' : 'follow' )
+                // toggle the text in the button
+                $('a.follow').text(previous_action == 'follow' ? 'Unfollow' : 'Follow')
+
+                // Icrement the total number of followers 
+                var followers =  parseInt($('span.followers-count').text())
+                $('span.followers-count').text(previous_action == 'follow' ? followers += 1 : followers - 1)
+                console.log(followers)             
+            }
+        }
+        )
+    })
+
+
+{% endblock domready %}

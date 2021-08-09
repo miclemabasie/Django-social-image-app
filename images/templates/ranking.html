@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Images Ranking</h1>
+<hr>
+<div class="row">
+  {% for image in most_viewed %}
+    
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+            <a href="{{image.get_absolute_url}}"><img class="card-img-top" src="{{image.image.url}}" alt=""></a>
+            <div class="card-body">
+                <h5>{{image.slug}}</h5>
+                <p class="card-text">{{image.description|truncatewords:10}}</p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+   </div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock title %}
+
+{% block content %}
+{% if user %}
+    <h2>Welcome {{user.username}}</h2>
+    <p>Your registration is complete, You can now login <a href="{% url 'login' %}">here</a></p>
+{% else %}
+<form action="" method='POST'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Register">
+</form>
+{% endif %}
+{% endblock content %}

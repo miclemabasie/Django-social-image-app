@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<h3>Edit Your Profile</h3>
+<hr>
+<form action="." method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+    {{user_form|crispy}}
+    {{profile_form|crispy}}
+    <input type="submit" value="Update Profile">
+</form>
+{% endblock content %}

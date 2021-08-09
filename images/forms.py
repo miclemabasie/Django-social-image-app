@@ -1,0 +1,44 @@
+from django import forms
+from django.forms import fields, widgets
+from .models import Image
+from django.utils.text import slugify
+from django.core.files.base import ContentFile
+from urllib import request
+
+
+class ImageCreateForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ['title', 'url', 'description']
+        widgets = {
+            'url': forms.HiddenInput
+        }
+
+    
+    def clean_url(self):
+        url = self.cleaned_data.get('url')
+        valid_extensions = ['jpeg', 'jpg']
+        extension = url.rsplit('.', 1)[1].lower()
+        if not extension in valid_extensions:
+            raise forms.ValidationError('Invalid Extension')
+        return url
+
+
+    def save(self, force_insert=False, force_update=False, commit=True):
+        
+        # create a new image instance
+        image = super().save(commit=False)
+        image_url = self.cleaned_data['url']
+        name = slugify(image.title)
+        extension = image_url.rsplit('.', 1)[1].lower()
+        # Generate a new image name by using a name and the image extension
+        image_name = f"{name}.{extension}"
+
+        # Download the image from the given url
+        response = request.urlopen(image_url)
+        image.image.save(image_name, ContentFile(response.read()), save=False)
+
+        if commit:
+            image.save()
+        return image
+

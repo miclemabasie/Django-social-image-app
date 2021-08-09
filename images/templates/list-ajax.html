@@ -1,0 +1,17 @@
+{% load thumbnail %}
+
+
+<div class="row mt-5 mb-5" >
+{% for image in images %}
+    
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+            <a href="{{image.get_absolute_url}}"><img class="card-img-top" src="{{image.image.url}}" alt=""></a>
+            <div class="card-body">
+                <h5>{{image.slug}}</h5>
+                <p class="card-text">{{image.description|truncatewords:10}}</p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+    </div> 

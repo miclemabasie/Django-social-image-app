@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  Login Page
+{% endblock title %}
+
+{% block content %}
+<h1>Login</h1>
+<hr>
+<form action="." method="post">
+    {% csrf_token %}
+    {{form | crispy}}
+    <input type="submit" value="Login">
+    <!-- <p><a href="{% url 'password-change' %}">Forgot password </a></p> -->
+    <p><a href="{% url 'password-change' %}">Change password </a></p>
+    <p>Do not have an account yet?? Follow this ling to register your account <a href="{% url 'register' %}">here</a></p>
+ <a href="{% url 'password_reset' %}">Reset password</a>
+
+  </form>
+{% endblock content %}

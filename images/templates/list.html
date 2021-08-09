@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="image-list">
+    {% include 'list-ajax.html' %}
+</div>
+{% endblock content %}
+
+
+{% block domready %}
+    var page = 1;
+    var empty_page = false
+    var block_request = false
+
+
+    $(window).scroll(function() {
+        var margin = $(document).height() - $(window).height() - 200;
+        console.log($(window).scrollTop())
+        console.log(margin)
+        console.log('empty page', empty_page)
+        console.log('bloack request', block_request)
+        if ($(window).scrollTop() > margin && empty_page == false && block_request == false){
+            block_request = true;
+            page += 1;
+            $.get('?page=' + page, function(data) {
+                if(data == '') {
+                    empty_page = true;
+                    console.log('this is yet another data', data)
+                }
+                else {
+                    block_request = false;
+                    $('#image-list').append(data)
+                    console.log('this is the data', data)
+                }
+            })
+        }
+    })
+
+{% endblock domready %}
